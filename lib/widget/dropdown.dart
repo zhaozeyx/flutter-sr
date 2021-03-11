@@ -29,28 +29,36 @@ class _DropDownWidgetState extends State<DropDownWidget> {
 
   @override
   Widget build(BuildContext context) {
-    return Column(
-      children: [_buildDropDownHeader(), _buildDropDownMenu()],
+    return Container(
+      child: Stack(
+        key: _stackKey,
+        children: [
+          Column(
+            children: [_buildDropDownHeader()],
+            mainAxisSize: MainAxisSize.max,
+          ),
+          _buildDropDownMenu()
+        ],
+      ),
+      decoration: BoxDecoration(color: Colors.blue),
     );
   }
 
   Widget _buildDropDownHeader() {
     return GZXDropDownHeader(
-      items: [GZXDropDownHeaderItem(headerTitle)],
+      items: [
+        GZXDropDownHeaderItem(headerTitle,
+            style: TextStyle(color: Colors.green)),
+      ],
       controller: _dropdownMenuController,
       stackKey: _stackKey,
-      style: TextStyle(color: Color(0xFF666666), fontSize: 13),
-      // 下拉时文字样式
-      dropDownStyle: TextStyle(
-        fontSize: 13,
-        color: Theme.of(context).primaryColor,
-      ),
     );
   }
 
   Widget _buildDropDownMenu() {
     return GZXDropDownMenu(
       controller: _dropdownMenuController,
+      animationMilliseconds: 300,
       // 下拉后遮罩颜色
       maskColor: Colors.red.withOpacity(0.5),
       menus: [
@@ -59,12 +67,13 @@ class _DropDownWidgetState extends State<DropDownWidget> {
           dropDownHeight: 40 * robotList.length.toDouble(),
         )
       ],
-      key: _stackKey,
     );
   }
 
   Widget _buildDeviceList() {
     return ListView.separated(
+        shrinkWrap: true,
+        scrollDirection: Axis.vertical,
         itemBuilder: (BuildContext context, int index) {
           return ListTile(
             title: Text(robotList[index].name),
@@ -72,7 +81,7 @@ class _DropDownWidgetState extends State<DropDownWidget> {
                 ? Icon(Icons.check, color: Colors.blue)
                 : null,
             onTap: () {
-              _dropdownMenuController.hide();
+              // _dropdownMenuController.hide();
               setState(() {
                 currentSelectedIndex = index;
                 headerTitle = robotList[index].name;

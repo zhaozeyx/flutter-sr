@@ -62,6 +62,12 @@ flutter:
     - images/2.0x/btn_video_fragment_play.png
     - images/src_avatar_default.png
     - images/2.0x/src_avatar_default.png
+    - images/icon_btn_fragment_cruise_navigation.png
+    - images/2.0x/icon_btn_fragment_cruise_navigation.png
+    - images/src_cruise_stop_disable.png
+    - images/2.0x/src_cruise_stop_disable.png
+    - images/src_cruise_stop_normal.png
+    - images/2.0x/src_cruise_stop_normal.png
 
   # An image asset can refer to one or more resolution-specific "variants", see
   # https://flutter.dev/assets-and-images/#resolution-aware.
