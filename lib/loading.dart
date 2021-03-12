@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_app/maintab.dart';
 
+import 'login.dart';
+
 class LoadingPage extends StatefulWidget {
   @override
   _LoadingPageState createState() => _LoadingPageState();
@@ -18,7 +20,7 @@ class _LoadingPageState extends State<LoadingPage> {
     Future.delayed(Duration(milliseconds: 1500), () {
       Navigator.of(context)
           .pushReplacement(MaterialPageRoute(builder: (BuildContext context) {
-        return MainTabWidget();
+        return LoginPage();
       }));
     });
     final double screenHeight = MediaQuery.of(context).size.height;

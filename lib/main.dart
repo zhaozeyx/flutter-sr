@@ -1,7 +1,7 @@
+// @dart=2.9
 import 'package:flutter/material.dart';
 import 'package:english_words/english_words.dart';
 import 'loading.dart';
-
 void main() => runApp(MyApp());
 
 class MyApp extends StatelessWidget {

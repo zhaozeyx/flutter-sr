@@ -95,8 +95,8 @@ class _DropDownWidgetState extends State<DropDownWidget> {
 }
 
 class Robot {
-  String id;
-  String name;
+  String id = "";
+  String name = "";
 
   Robot(String id, String name) {
     this.id = id;

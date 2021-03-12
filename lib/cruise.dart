@@ -37,7 +37,7 @@ class CruisePage extends StatelessWidget {
                   Align(
                     child: Image.asset("images/src_cruise_stop_normal.png"),
                     alignment: Alignment.bottomRight,
-                  )
+                  ),
                 ],
               ),
               alignment: Alignment.bottomCenter,
