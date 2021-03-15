@@ -31,6 +31,10 @@ dependencies:
   english_words: ^4.0.0-0
   gzx_dropdown_menu: ^2.1.0
   provider: ^4.0.0
+  popup_window: ^1.1.1
+  chewie: ^0.12.0
+  video_player: ^1.0.0
+
 
 dev_dependencies:
   flutter_test:

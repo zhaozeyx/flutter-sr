@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_app/video_play.dart';
 import 'package:flutter_app/widget/dropdown.dart';
 import 'package:flutter_app/widget/dropdown_title_bar.dart';
 import 'package:gzx_dropdown_menu/gzx_dropdown_menu.dart';
@@ -10,7 +11,7 @@ class VideoPage extends StatefulWidget {
 
 class _VideoPageState extends State<VideoPage> {
   final GZXDropdownMenuController _dropdownMenuController =
-      GZXDropdownMenuController();
+  GZXDropdownMenuController();
 
   final GlobalKey _stackKey = GlobalKey();
 
@@ -50,27 +51,34 @@ class _VideoPageState extends State<VideoPage> {
   }
 
   Widget _createContent(BuildContext context) {
-    return Column(
-      children: [
-        Image(
-          image: AssetImage("images/btn_video_fragment_play.png"),
+    return GestureDetector(
+      child: GestureDetector(
+        child: Column(
+          children: [
+            Image(
+              image: AssetImage("images/btn_video_fragment_play.png"),
+            ),
+            Text(
+              "点击播放",
+              style: TextStyle(fontSize: 36.0, color: Colors.black26),
+            )
+          ],
+          mainAxisAlignment: MainAxisAlignment.center,
         ),
-        Text(
-          "点击播放",
-          style: TextStyle(fontSize: 36.0, color: Colors.black26),
-        )
-      ],
-      mainAxisAlignment: MainAxisAlignment.center,
+        onTap: (){
+          Navigator.of(context).push(MaterialPageRoute(builder: (BuildContext context) => VideoPlayPage()));
+        },
+      ),
+      onTap: () {
+      },
     );
   }
 
   @override
   void initState() {
     super.initState();
-    robotList
-      ..add(Robot("1", "Robot1"))
-      ..add(Robot("2", "Robot2"))
-      ..add(Robot("3", "Robot3"));
+    robotList..add(Robot("1", "Robot1"))..add(Robot("2", "Robot2"))..add(
+        Robot("3", "Robot3"));
   }
 
   Widget _buildDropDownHeader() {
@@ -128,7 +136,7 @@ class _VideoPageState extends State<VideoPage> {
 
 class TitleBar extends StatelessWidget {
   final TextStyle dropDownTextStyle =
-      TextStyle(color: Colors.black87, fontSize: 22.0);
+  TextStyle(color: Colors.black87, fontSize: 22.0);
 
   @override
   Widget build(BuildContext context) {
