@@ -1,6 +1,7 @@
 // @dart=2.9
 import 'package:flutter/material.dart';
 import 'package:english_words/english_words.dart';
+import 'package:flutter_localizations/flutter_localizations.dart';
 import 'loading.dart';
 void main() => runApp(MyApp());
 
@@ -12,6 +13,14 @@ class MyApp extends StatelessWidget {
       title: "My First App",
       theme: ThemeData(primaryColor: Colors.white),
       home: LoadingPage(),
+      localizationsDelegates: [
+        GlobalMaterialLocalizations.delegate,
+        GlobalWidgetsLocalizations.delegate
+      ],
+      supportedLocales: [
+        const Locale('en', 'US'), // 美国英语
+        const Locale('zh', 'CN'), // 中文简体
+      ],
     );
   }
 }

@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_app/video_play.dart';
 import 'package:flutter_app/widget/dropdown.dart';
 import 'package:flutter_app/widget/dropdown_title_bar.dart';
-import 'package:gzx_dropdown_menu/gzx_dropdown_menu.dart';
 
 class VideoPage extends StatefulWidget {
   @override
@@ -10,23 +9,27 @@ class VideoPage extends StatefulWidget {
 }
 
 class _VideoPageState extends State<VideoPage> {
-  final GZXDropdownMenuController _dropdownMenuController =
-  GZXDropdownMenuController();
-
   final GlobalKey _stackKey = GlobalKey();
-
-  final List<Robot> robotList = <Robot>[];
 
   int currentSelectedIndex = 0;
 
-  String headerTitle = "机器人";
+  String headerTitle = "ROBOT-845";
+
+  bool unfold = false;
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
         appBar: AppBar(
           centerTitle: true,
-          title: DropDownTitleBar(),
+          title: DropDownTitleBar(
+            onClicked: (bool unfold) {
+              setState(() {
+                this.unfold = unfold;
+              });
+            },
+            title: headerTitle,
+          ),
         ),
         body: Stack(
           key: _stackKey,
@@ -39,6 +42,25 @@ class _VideoPageState extends State<VideoPage> {
                       Center(
                         child: _createContent(context),
                       ),
+                      unfold
+                          ? Expanded(
+                              child: Container(
+                                child: DropDownList(
+                                  onItemSelected: (String value) {
+                                    setState(() {
+                                      headerTitle = value;
+                                      this.unfold = false;
+                                    });
+                                  },
+                                ),
+                                decoration:
+                                    BoxDecoration(color: Colors.black38),
+                              ),
+                            )
+                          : SizedBox(
+                              width: 0,
+                              height: 0,
+                            )
                     ],
                   ),
                   flex: 1,
@@ -65,78 +87,49 @@ class _VideoPageState extends State<VideoPage> {
           ],
           mainAxisAlignment: MainAxisAlignment.center,
         ),
-        onTap: (){
-          Navigator.of(context).push(MaterialPageRoute(builder: (BuildContext context) => VideoPlayPage()));
+        onTap: () async {
+          _showPlayDialog();
+
         },
       ),
-      onTap: () {
-      },
+      onTap: () {},
     );
+  }
+
+  Future<void> _showPlayDialog() {
+    return showDialog<bool>(
+        context: context,
+        builder: (context) {
+          return Material(
+            child: VideoPlayPage(),
+            type: MaterialType.transparency,
+          );
+        });
+  }
+
+
+  void performToPlay() {
+    Navigator.of(context).push(PageRouteBuilder(
+        pageBuilder: (context, _, __) {
+          return Material(
+            child: VideoPlayPage(),
+            type: MaterialType.transparency,
+          );
+        },
+        barrierColor: Colors.transparent,
+        opaque: false,
+        fullscreenDialog: true));
   }
 
   @override
   void initState() {
     super.initState();
-    robotList..add(Robot("1", "Robot1"))..add(Robot("2", "Robot2"))..add(
-        Robot("3", "Robot3"));
-  }
-
-  Widget _buildDropDownHeader() {
-    return GZXDropDownHeader(
-      items: [
-        GZXDropDownHeaderItem(headerTitle,
-            style: TextStyle(color: Colors.green)),
-      ],
-      controller: _dropdownMenuController,
-      stackKey: _stackKey,
-      onItemTap: (index) {
-        print("YZZ  index");
-      },
-    );
-  }
-
-  Widget _buildDropDownMenu() {
-    return GZXDropDownMenu(
-      controller: _dropdownMenuController,
-      animationMilliseconds: 300,
-      // 下拉后遮罩颜色
-      maskColor: Colors.red.withOpacity(0.5),
-      menus: [
-        GZXDropdownMenuBuilder(
-          dropDownWidget: _buildDeviceList(),
-          dropDownHeight: 80 * robotList.length.toDouble(),
-        )
-      ],
-    );
-  }
-
-  Widget _buildDeviceList() {
-    return ListView.separated(
-        shrinkWrap: true,
-        scrollDirection: Axis.vertical,
-        itemBuilder: (BuildContext context, int index) {
-          return ListTile(
-            title: Text(robotList[index].name),
-            trailing: (currentSelectedIndex == index)
-                ? Icon(Icons.check, color: Colors.blue)
-                : null,
-            onTap: () {
-              // _dropdownMenuController.hide();
-              setState(() {
-                currentSelectedIndex = index;
-                headerTitle = robotList[index].name;
-              });
-            },
-          );
-        },
-        separatorBuilder: (BuildContext context, int index) => Divider(),
-        itemCount: robotList.length);
   }
 }
 
 class TitleBar extends StatelessWidget {
   final TextStyle dropDownTextStyle =
-  TextStyle(color: Colors.black87, fontSize: 22.0);
+      TextStyle(color: Colors.black87, fontSize: 22.0);
 
   @override
   Widget build(BuildContext context) {
@@ -153,6 +146,68 @@ class TitleBar extends StatelessWidget {
         decoration: BoxDecoration(shape: BoxShape.rectangle),
       ),
       top: true,
+    );
+  }
+}
+
+class DropDownList extends StatefulWidget {
+  void Function(String value)? onItemSelected;
+
+  DropDownList({this.onItemSelected});
+
+  @override
+  _DropDownListState createState() =>
+      _DropDownListState(onItemTap: onItemSelected);
+}
+
+class _DropDownListState extends State<DropDownList> {
+  void Function(String value)? onItemTap;
+
+  _DropDownListState({this.onItemTap});
+
+  List<String> robotList = [];
+  int currentSelected = 0;
+
+  @override
+  void initState() {
+    super.initState();
+    robotList..add("ROBOT-845")..add("ROBOT-856");
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return ListView.builder(
+      itemCount: robotList.length,
+      itemBuilder: (BuildContext context, int index) {
+        return GestureDetector(
+          child: Container(
+            child: ListTile(
+              title: Text(
+                robotList[index],
+                style: TextStyle(
+                    color: index == currentSelected
+                        ? Colors.blue
+                        : Colors.black87),
+              ),
+              trailing: index == currentSelected
+                  ? Icon(
+                      Icons.check,
+                      color: Colors.blue,
+                    )
+                  : null,
+              selected: currentSelected == index,
+              onTap: () {
+                setState(() {
+                  currentSelected = index;
+                });
+                onItemTap?.call(robotList[index]);
+              },
+            ),
+            color: Colors.white,
+          ),
+          onTap: () {},
+        );
+      },
     );
   }
 }

@@ -38,17 +38,33 @@ class _VideoPlayPageState extends State<VideoPlayPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: Container(
-        color: Colors.transparent,
-        child: Center(
-          child: _chewieController != null &&
-                  _chewieController!.videoPlayerController.value.initialized
-              ? Chewie(
-                  controller: _chewieController,
-                )
-              : CircularProgressIndicator(),
+      body: GestureDetector(
+        child: Container(
+          child: Center(
+            child: _chewieController != null &&
+                    _chewieController!.videoPlayerController.value.initialized
+                ? Chewie(
+                    controller: _chewieController,
+                  )
+                : CircularProgressIndicator(),
+          ),
         ),
+
+        onTap: () {
+          print("video onTap");
+          Navigator.of(context).pop();
+        },
       ),
+      backgroundColor: Colors.transparent,
     );
   }
+}
+
+class PlayDialog extends Dialog {
+  @override
+  Widget build(BuildContext context) {
+    return super.build(context);
+  }
+
+
 }
