@@ -3,6 +3,9 @@ import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'dart:io';
 
+import 'package:flutter_app/viewmodel/warning_view_model.dart';
+import 'package:provider/provider.dart';
+
 class WarningPage extends StatefulWidget {
   @override
   _WarningPageState createState() => _WarningPageState();
@@ -38,7 +41,12 @@ class _WarningPageState extends State<WarningPage> {
         ),
       ),
       body: Stack(
-        children: [WarningListWidget()],
+        children: [
+          ChangeNotifierProvider(
+            create: (context) => WarningViewModel(),
+            child: WarningListWidget(),
+          )
+        ],
       ),
     );
   }
@@ -87,95 +95,32 @@ class WarningListWidget extends StatefulWidget {
 }
 
 class _WarningListWidgetState extends State<WarningListWidget> {
-  List<AlarmBean> alarmList = [];
-
   @override
   void initState() {
     super.initState();
-    loadList();
-  }
-
-  Future<void> loadList() async {
-    HttpClient httpClient = HttpClient();
-    HttpClientRequest request = await httpClient.postUrl(
-        Uri.parse("http://221.229.218.22:10812/api/v1/web/alarm/list"));
-    String payload =
-        "userCode=2020101410414263582&startTime=2019-04-17 00:00:00&endTime=2021-03-17 23:59:59&pageNum=1&pageSize=50";
-    request.add(utf8.encode(payload));
-    HttpClientResponse response = await request.close();
-    if (response.statusCode == HttpStatus.ok) {
-      var responseJson = await response.transform(utf8.decoder).join();
-      var responseObj = jsonDecode(responseJson);
-      var data = responseObj["data"];
-      data.forEach((item) {
-        alarmList.add(AlarmBean.fromJson(item));
-      });
-      // var list = data.map((e) => AlarmBean.fromJson(e)).toList();
-      // // print(list);
-      // alarmList.addAll(list);
-      setState(() {});
-    }
   }
 
   @override
   Widget build(BuildContext context) {
+    WarningViewModel viewModel = Provider.of<WarningViewModel>(context);
+    viewModel.loadList();
+    print('build $viewModel');
     return ListView.builder(
-        itemCount: alarmList.length,
-        itemBuilder: (BuildContext context, int index) {
-          print(alarmList.length);
-          return ListTile(
-            leading: Image(image: AssetImage("images/icon_alarm_leading.png")),
-            title: Text(alarmList[index].alarmType == null
-                ? ""
-                : alarmList[index].alarmType!),
-            subtitle: Text(alarmList[index].robotName == null
-                ? ""
-                : alarmList[index].robotName!),
-            trailing: Text(alarmList[index].alarmTime == null
-                ? ""
-                : alarmList[index].alarmTime!.toString()),
-          );
-        });
-  }
-}
-
-class AlarmBean {
-  String? alarmId;
-  String? robotId;
-  String? alarmType;
-  String? alarmTypeEn;
-  int? alarmTime;
-  String? robotName;
-  String? url;
-
-  AlarmBean(
-      {this.alarmId,
-      this.robotId,
-      this.alarmType,
-      this.alarmTypeEn,
-      this.alarmTime,
-      this.robotName,
-      this.url});
-
-  AlarmBean.fromJson(Map<String, dynamic> json) {
-    alarmId = json['alarmId'];
-    robotId = json['robotId'];
-    alarmType = json['alarmType'];
-    alarmTypeEn = json['alarmTypeEn'];
-    alarmTime = json['alarmTime'];
-    robotName = json['robotName'];
-    url = json['url'];
-  }
-
-  Map<String, dynamic> toJson() {
-    final Map<String, dynamic> data = new Map<String, dynamic>();
-    data['alarmId'] = this.alarmId;
-    data['robotId'] = this.robotId;
-    data['alarmType'] = this.alarmType;
-    data['alarmTypeEn'] = this.alarmTypeEn;
-    data['alarmTime'] = this.alarmTime;
-    data['robotName'] = this.robotName;
-    data['url'] = this.url;
-    return data;
+      itemBuilder: (BuildContext context, int index) {
+        return ListTile(
+          leading: Image(image: AssetImage("images/icon_alarm_leading.png")),
+          title: Text(viewModel.data[index].alarmType == null
+              ? ""
+              : viewModel.data[index].alarmType!),
+          subtitle: Text(viewModel.data[index].robotName == null
+              ? ""
+              : viewModel.data[index].robotName!),
+          trailing: Text(viewModel.data[index].alarmTime == null
+              ? ""
+              : viewModel.data[index].alarmTime!.toString()),
+        );
+      },
+      itemCount: viewModel.data.length,
+    );
   }
 }
